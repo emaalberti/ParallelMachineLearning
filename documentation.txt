@@ -1,0 +1,34 @@
+# documentation to expalain transformations
+
+# RDD of (cluster_id, point)
+
+# point_assignment = X_rdd.map(lambda point: (serialAssign2cluster(np.array(point), bc_centroids.values), bc_centroids.values)) 
+[
+    (0, array([1.0, 2.0])),
+    (1, array([5.0, 6.0])),
+    (0, array([1.5, 2.5])),
+    (1, array([5.5, 6.5])),
+    (0, array([1.2, 2.2]))
+]
+
+# After mapValues (cluster_id, (point, 1)), add 1 to each point to count them
+
+# point_assignment_stage2 = point_asignment.mapValues(lambda point: (point, 1))
+
+[
+    (0, (array([1.0, 2.0]), 1)),
+    (1, (array([5.0, 6.0]), 1)),
+    (0, (array([1.5, 2.5]), 1)),
+    (1, (array([5.5, 6.5]), 1)),
+    (0, (array([1.2, 2.2]), 1))
+]
+
+# now i want to sum counts and points of grouped by clusters, I'll do that using reduceByKey where the key is the clusterID
+# remember key = 0 value = (array([1.0, 2.0]), 1)
+# point_assignment_stage3 = point_asignment2.reduceByKey(lambda a, b: a[0] + b[0], a[1] + b[1])
+
+# and this is the final result after collecting
+
+cluster_stats = [
+    (0, (array([3.7, 6.7]), 3)),  # cluster 0: sum and count
+    (1, (array([11.0, 13.0]), 2))  # cluster 1: sum and count
